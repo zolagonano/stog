@@ -1,0 +1,15 @@
+[package]
+name = "stog"
+version = "0.1.0"
+authors = ["Zola Gonano <zolagonano@protonmail.com>"]
+edition = "2018"
+
+[lib]
+name="lib"
+path="src/lib/lib.rs"
+
+[[bin]]
+name="stog"
+path="src/bin/bin.rs"
+
+[dependencies]
