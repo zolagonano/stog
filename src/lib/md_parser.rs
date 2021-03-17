@@ -33,8 +33,8 @@ mod tests {
     fn markdown_to_html_test() {
         let html = Html::new(include_str!("../test_includes/markdown_lorem_ipsum.md"));
         assert_eq!(
-            html.parse(),
-            include_str!("../test_includes/markdown_lorem_ipsum.html")
+            include_str!("../test_includes/markdown_lorem_ipsum.html"),
+            html.parse()
         );
     }
 }
