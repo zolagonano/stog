@@ -71,11 +71,7 @@ impl Index<'_> {
 }
 
 impl Feed<'_> {
-    pub fn new(
-        config: Config,
-        headers: Vec<HashMap<&str, String>>,
-        bodies: Vec<String>,
-    ) -> Feed {
+    pub fn new(config: Config, headers: Vec<HashMap<&str, String>>, bodies: Vec<String>) -> Feed {
         Feed {
             config: config,
             headers: headers,
