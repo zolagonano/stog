@@ -1,0 +1,5 @@
+base_url = "{{ config.base_url }}"
+site_name = "{{ config.site_name }}"
+site_author = "{{config.site_author}}"
+site_description = "{{ config.site_description }}"
+post_headers = {{ config.post_headers }}
