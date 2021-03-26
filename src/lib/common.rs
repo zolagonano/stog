@@ -2,6 +2,7 @@ use regex::Regex;
 use std::env::current_dir;
 use std::fs::{create_dir_all, read_dir, read_to_string, write};
 use std::path::Path;
+use fs_extra::{copy_items, dir};
 
 pub fn split_header_from_markdown(markdown: &str) -> (String, String) {
     let re = Regex::new(r"\A---\n((.|\n)*?)---\n((.|\n)*)").expect("There is a problem in regex");
@@ -51,6 +52,11 @@ pub fn pwd() -> String {
 pub fn write_file(path: &str, text: &str) {
     let path = Path::new(path);
     write(path, text).expect("could not write file");
+}
+
+pub fn copy_dir(from: &Vec<&str>, to: &str) {
+    let options = dir::CopyOptions::new();
+    copy_items(from, to, &options).expect("could not copy this directory");
 }
 
 #[cfg(test)]
