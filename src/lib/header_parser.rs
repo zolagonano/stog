@@ -43,19 +43,21 @@ mod tests {
     fn yaml_parser_test() {
         let yaml = Yaml::new(
             vec![
-                "title".to_string(),
-                "date".to_string(),
-                "author".to_string(),
+                String::from("title"),
+                String::from("date"),
+                String::from("author"),
             ],
-            r#"title: The first!!
+            String::from(
+                r#"title: The first!!
 date: 2027-12-27
 author: Somebody"#,
+            ),
         );
 
-        let mut expected_result: HashMap<&str, String> = HashMap::new();
-        expected_result.insert("title", "The first!!".to_string());
-        expected_result.insert("date", "2027-12-27".to_string());
-        expected_result.insert("author", "Somebody".to_string());
+        let mut expected_result: HashMap<String, String> = HashMap::new();
+        expected_result.insert(String::from("title"), String::from("The first!!"));
+        expected_result.insert(String::from("date"), String::from("2027-12-27"));
+        expected_result.insert(String::from("author"), String::from("Somebody"));
 
         assert_eq!(expected_result, yaml.parse());
     }
