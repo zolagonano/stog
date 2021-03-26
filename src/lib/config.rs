@@ -1,6 +1,7 @@
 use serde_derive::{Deserialize, Serialize};
+use toml::from_str;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Config {
     pub base_url: String,
     pub site_name: String,
@@ -10,6 +11,10 @@ pub struct Config {
 }
 
 impl Config {
+    pub fn read_config(toml_text: &str) -> Config {
+        let config: Config = from_str(toml_text).expect("could not parse the config file");
+        config
+    }
     pub fn get_defaults() -> Config {
         Config {
             base_url: String::from(""),
@@ -17,9 +22,9 @@ impl Config {
             site_author: String::from("Somebody"),
             site_description: String::from("generated with STOG"),
             post_headers: vec![
-                String::from("title"),
-                String::from("date"),
-                String::from("author"),
+                String::from("\"title\""),
+                String::from("\"date\""),
+                String::from("\"author\""),
             ],
         }
     }
