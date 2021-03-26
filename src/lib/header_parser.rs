@@ -1,26 +1,26 @@
 use serde_yaml::{from_str, Value};
 use std::collections::HashMap;
 
-pub struct Yaml<'a> {
+pub struct Yaml {
     key_list: Vec<String>,
-    yaml_text: &'a str,
+    yaml_text: String,
 }
 
-impl Yaml<'_> {
-    pub fn new(key_list: Vec<String>, yaml_text: &str) -> Yaml {
+impl Yaml {
+    pub fn new(key_list: Vec<String>, yaml_text: String) -> Yaml {
         Yaml {
             key_list: key_list,
             yaml_text: yaml_text,
         }
     }
 
-    pub fn parse(&self) -> HashMap<&str, String> {
-        let yaml_data: Value = from_str(self.yaml_text).expect("could not parse this yaml header");
+    pub fn parse(&self) -> HashMap<String, String> {
+        let yaml_data: Value = from_str(&self.yaml_text).expect("could not parse this yaml header");
 
-        let mut parsed_yaml: HashMap<&str, String> = HashMap::new();
+        let mut parsed_yaml: HashMap<String, String> = HashMap::new();
 
         for key in &self.key_list {
-            parsed_yaml.insert(&key, Yaml::get_value_by_key(&key, &yaml_data));
+            parsed_yaml.insert(key.to_string(), Yaml::get_value_by_key(&key, &yaml_data));
         }
 
         parsed_yaml
