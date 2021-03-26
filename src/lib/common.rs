@@ -3,14 +3,14 @@ use std::env::current_dir;
 use std::fs::{create_dir_all, read_dir, read_to_string, write};
 use std::path::Path;
 
-pub fn split_header_from_markdown(markdown: &str) -> Vec<String> {
+pub fn split_header_from_markdown(markdown: &str) -> (String, String) {
     let re = Regex::new(r"\A---\n((.|\n)*?)---\n((.|\n)*)").expect("There is a problem in regex");
 
     let caps = re
         .captures(markdown)
         .expect("Could not split header and body");
 
-    vec![caps[1].to_string(), caps[3].to_string()]
+    (caps[1].to_string(), caps[3].to_string())
 }
 
 pub fn read_file(path: &str) -> String {
@@ -58,10 +58,10 @@ mod tests {
     use super::split_header_from_markdown;
     #[test]
     fn split_header_test() {
-        let expected_result = vec![
-            include_str!("../test_includes/markdown_lorem_ipsum_with_header_header.md"),
-            include_str!("../test_includes/markdown_lorem_ipsum_with_header_body.md"),
-        ];
+        let expected_result = (
+            include_str!("../test_includes/markdown_lorem_ipsum_with_header_header.md").to_string(),
+            include_str!("../test_includes/markdown_lorem_ipsum_with_header_body.md").to_string(),
+        );
 
         assert_eq!(
             expected_result,
