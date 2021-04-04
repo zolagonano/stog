@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ config.site_name }}</title>
+        <link rel="stylesheet" type="text/css" href="{{ config.base_url }}/public/style.css">
+    </head>
+    <body>
+        <div class="post">
+            <div class="post_head">
+                <div class="post_title">
+                    <h1>{{ post[1]["title"] }}</h1>
+                </div>
+            
+                <div class="post_date">
+                    <p>{{ post[1]["date"] }}</p>
+                </div>
+            </div>
+            <div class="post_body">
+                {{ post[0] }}
+            </div>
+        </div>
+    </body>
+</html>
+

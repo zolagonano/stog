@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>{{ config.site_name }}</title>
+    <link href="{{ config.base_url }}"/>
+    <updated>{{ now() | date(format="%Y-%m-%dT%H:%M:%S%:z") }}</updated>
+    <author>
+        <name>{{ config.site_author }}</name>
+    </author>
+
+    {% for post in posts %}
+    <entry>
+        <title>{{ post.header["title"] }}</title>
+        <link href="{{ config.base_url }}/posts/{{ post.metadata.file_name }}"/>
+        <id>{{ post.metadata.file_id }}</id>
+        <updated>post.header["date"] | date(format="%Y-%m-%dT%H:%M:%S%:z")</updated>
+        <content type="html">{{ post.body }}</content>
+    </entry>
+    {% endfor %}
+</feed>
+
