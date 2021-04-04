@@ -3,14 +3,23 @@ name = "stog"
 version = "0.1.0"
 authors = ["Zola Gonano <zolagonano@protonmail.com>"]
 edition = "2018"
+description = "STOG is a static blog generator implemented in rust"
+homepage = "https://github.com/zolagonano/stog.git"
+repository = "https://github.com/zolagonano/stog.git"
+keywords = ["blog", "markdown", "static", "minimal", "generator"]
+categories = ["command-line-utilities"]
+license = "MIT"
+readme = "README.md"
 
 [lib]
-name="lib"
-path="src/lib/lib.rs"
+name = "lib"
+path = "src/lib/lib.rs"
+doc = false
 
 [[bin]]
-name="stog"
-path="src/bin/bin.rs"
+name = "stog"
+path = "src/bin/bin.rs"
+doc = false
 
 [dependencies]
 pulldown-cmark = "0.8.0"
