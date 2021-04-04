@@ -1,6 +1,6 @@
 use regex::Regex;
 use std::env::current_dir;
-use std::fs::{create_dir_all, read_dir, read_to_string, write};
+use std::fs::{create_dir_all, read_dir, read_to_string, write, remove_dir_all};
 use std::path::Path;
 use fs_extra::{copy_items, dir};
 
@@ -34,6 +34,10 @@ pub fn list_dir(path: &str) -> Result<Vec<String>, &'static str> {
     } else {
         Err("not a directory")
     }
+}
+
+pub fn rm_dir(path: &str){
+    remove_dir_all(path).expect("could not remove this directory");
 }
 
 pub fn make_dirs(dirs: &Vec<String>) {
