@@ -1,7 +1,6 @@
 use clap::{App, Arg, SubCommand};
 use lib::{common, config, header_parser, md_parser, templator};
 use md5::compute as md5_compute;
-use std::collections::HashMap;
 
 fn main() {
     let matches = App::new("STOG: Static Blog Generator")
