@@ -8,7 +8,7 @@ pub struct Html<'a> {
 impl Html<'_> {
     pub fn new(markdown_text: &str) -> Html {
         Html {
-            markdown_text: markdown_text,
+            markdown_text,
         }
     }
 

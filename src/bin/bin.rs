@@ -40,7 +40,7 @@ fn initialize(blog_name: &str) {
 
     let config_template_file = include_str!("../init_files/config.toml");
     let config = templator::InitConfig::new(config::Config::get_defaults())
-        .template_text(&config_template_file);
+        .template_text(config_template_file);
 
     let write_list: &[&(String, &str)] = &[
         &(format!("{}/config.toml", blog_name), config.as_str()),
@@ -95,7 +95,7 @@ fn get_post(config: config::Config, post_path: String) -> templator::Post {
 
     let metadata = templator::MetaData::new(file_name, file_id);
 
-    templator::Post::new(config, body, header, metadata).clone()
+    templator::Post::new(config, body, header, metadata)
 }
 
 fn build() {
@@ -115,13 +115,11 @@ fn build() {
         let config_file = common::read_file("config.toml");
         let config = config::Config::read_config(&config_file);
 
-        common::make_dirs(&vec![
-            String::from("_build"),
+        common::make_dirs(&[String::from("_build"),
             String::from("_build/posts"),
-            String::from("_build/public"),
-        ]);
+            String::from("_build/public")]);
 
-        common::copy_dir(&vec!["public"], "_build");
+        common::copy_dir(&["public"], "_build");
 
         let posts: Vec<String> = common::list_dir("_posts")
             .unwrap()

@@ -9,8 +9,8 @@ pub struct Yaml {
 impl Yaml {
     pub fn new(key_list: Vec<String>, yaml_text: String) -> Yaml {
         Yaml {
-            key_list: key_list,
-            yaml_text: yaml_text,
+            key_list,
+            yaml_text,
         }
     }
 
@@ -20,7 +20,7 @@ impl Yaml {
         let mut parsed_yaml: HashMap<String, String> = HashMap::new();
 
         for key in &self.key_list {
-            parsed_yaml.insert(key.to_string(), Yaml::get_value_by_key(&key, &yaml_data));
+            parsed_yaml.insert(key.to_string(), Yaml::get_value_by_key(key, &yaml_data));
         }
 
         parsed_yaml
@@ -30,7 +30,7 @@ impl Yaml {
         yaml_data[key]
             .as_str()
             .map(|value| value.to_string())
-            .expect(&format!("could not find key {} in your yaml header", key))
+            .unwrap_or_else(|| panic!("could not find key {} in your yaml header", key))
     }
 }
 

@@ -40,7 +40,7 @@ pub fn rm_dir(path: &str){
     remove_dir_all(path).expect("could not remove this directory");
 }
 
-pub fn make_dirs(dirs: &Vec<String>) {
+pub fn make_dirs(dirs: &[String]) {
     for dir in dirs {
         create_dir_all(dir).expect("could not create directory");
     }
@@ -58,7 +58,7 @@ pub fn write_file(path: &str, text: &str) {
     write(path, text).expect("could not write file");
 }
 
-pub fn copy_dir(from: &Vec<&str>, to: &str) {
+pub fn copy_dir(from: &[&str], to: &str) {
     let options = dir::CopyOptions::new();
     copy_items(from, to, &options).expect("could not copy this directory");
 }

@@ -24,13 +24,13 @@ pub struct Post {
 #[derive(Serialize, Debug)]
 pub struct Index<'a> {
     config: &'a Config,
-    posts: &'a Vec<Post>,
+    posts: &'a [Post],
 }
 
 #[derive(Serialize, Debug)]
 pub struct Feed<'a> {
     config: &'a Config,
-    posts: &'a Vec<Post>,
+    posts: &'a [Post],
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -41,8 +41,8 @@ pub struct InitConfig {
 impl MetaData {
     pub fn new(file_name: String, file_id: String) -> MetaData {
         MetaData {
-            file_name: file_name,
-            file_id: file_id,
+            file_name,
+            file_id,
         }
     }
 }
@@ -55,10 +55,10 @@ impl Post {
         metadata: MetaData,
     ) -> Post {
         Post {
-            config: config,
-            body: body,
-            header: header,
-            metadata: metadata,
+            config,
+            body,
+            header,
+            metadata,
         }
     }
 
@@ -73,10 +73,10 @@ impl Post {
 }
 
 impl Index<'_> {
-    pub fn new<'a>(config: &'a Config, posts: &'a Vec<Post>) -> Index<'a> {
+    pub fn new<'a>(config: &'a Config, posts: &'a [Post]) -> Index<'a> {
         Index {
-            config: config,
-            posts: posts,
+            config,
+            posts,
         }
     }
 
@@ -91,10 +91,10 @@ impl Index<'_> {
 }
 
 impl Feed<'_> {
-    pub fn new<'a>(config: &'a Config, posts: &'a Vec<Post>) -> Feed<'a> {
+    pub fn new<'a>(config: &'a Config, posts: &'a [Post]) -> Feed<'a> {
         Feed {
-            config: config,
-            posts: posts,
+            config,
+            posts,
         }
     }
 
@@ -110,7 +110,7 @@ impl Feed<'_> {
 
 impl InitConfig {
     pub fn new(config: Config) -> InitConfig {
-        InitConfig { config: config }
+        InitConfig { config }
     }
 
     pub fn template_text(&self, file_content: &str) -> String {
