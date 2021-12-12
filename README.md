@@ -4,6 +4,9 @@ STOG is a static blog generator from a directory of markdown files.
 **WARNING: I'm new to [rust](https://rust-lang.org) and this is my second project with [rust](https://rust-lang.org), so this project may have lots of bugs, and it will be unstable, but it will get better and better over time.**
 
 ## Installation:
+
+**IMPORTANT:** If you are using the nightly toolchain version 1.57.0 or older, you will need to update your toolchain to install this crate, see [dtolnay/proc-macro2/issues/307](https://github.com/dtolnay/proc-macro2/issues/307).
+ 
 For installation you will have two options:
 
 1. install from source code
