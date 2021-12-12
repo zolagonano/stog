@@ -2,7 +2,7 @@
 name = "stog"
 version = "0.1.0"
 authors = ["Zola Gonano <zolagonano@protonmail.com>"]
-edition = "2018"
+edition = "2021"
 description = "STOG is a static blog generator implemented in rust"
 homepage = "https://github.com/zolagonano/stog.git"
 repository = "https://github.com/zolagonano/stog.git"
