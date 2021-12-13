@@ -2,24 +2,25 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ config.site_name }}</title>
-        <link rel="stylesheet" type="text/css" href="{{ config.base_url }}/public/style.css">
+        <title>{{ config.site_name }} - {{ post[1]["title"] }}</title>
+        <link rel="stylesheet" type="text/css" href="{{ config.base_url }}/public/normalize.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{ config.base_url }}/public/skeleton.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{ config.base_url }}/public/style.css" />
+
     </head>
-    <body>
-        <div class="post">
-            <div class="post_head">
-                <div class="post_title">
+    <body class="container">
+        <article class="post">
+            <center>
+                <header class="post_header">
                     <h1>{{ post[1]["title"] }}</h1>
-                </div>
-            
-                <div class="post_date">
-                    <p>{{ post[1]["date"] }}</p>
-                </div>
-            </div>
-            <div class="post_body">
+                    <p>Written On <span class="date">{{ post[1]["date"] }}</span> By <span class="author">{{ post[1]["author"] }}</span></p>
+                </header>
+            </center>
+
+            <main class="post_body">
                 {{ post[0] }}
-            </div>
-        </div>
+            </main>
+        </article>
     </body>
 </html>
 

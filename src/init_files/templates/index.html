@@ -3,30 +3,26 @@
     <head>
         <meta charset="utf-8" />
         <title>{{ config.site_name }}</title>
+        <link rel="stylesheet" type="text/css" href="{{ config.base_url }}/public/normalize.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{ config.base_url }}/public/skeleton.min.css" />
         <link rel="stylesheet" type="text/css" href="{{ config.base_url }}/public/style.css" />
     </head>
-    <body>
+    <body class="container">
         {% for post in posts %}
-        <div class="index">
-            <div class="index_head">
-                <div class="index_title">
+        <article class="post">
+            <center>
+            <header class="post_header">
                     <h1>
-                        <a href="{{ config.base_url }}/posts/{{ post.metadata.file_name }}">
-                            {{ post.header["title"] }}
-                        </a>
+                        <a href="{{ config.base_url }}/posts/{{ post.metadata.file_name }}">{{ post.header["title"] }}</a>
                     </h1>
-                </div>
-            
-                <div class="index_date">
-                    <p>{{ post.header["date"] }}</p>
-                </div>
-            </div>
+                    <p>Written On <span class="date">{{ post.header["date"] }}</span> By <span class="author">{{ post.header["author"] }}</span></p>
+                </header>
+            </center>
 
-            <div class="index_body">
-                {{ post.body }}
-            </div>
-        </div>
+            <main class="post_body">
+                {{ post.body | truncate(length=256, end="...") }}
+            </main>
+        </article>
         {% endfor %}
     </body>
 </html>
-
