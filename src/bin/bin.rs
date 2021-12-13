@@ -67,7 +67,15 @@ fn initialize(blog_name: &str) {
         &(
             format!("{}/public/style.css", blog_name),
             include_str!("../init_files/theme/style.css")
-        )
+        ),
+        &(
+            format!("{}/public/skeleton.min.css", blog_name),
+            include_str!("../init_files/theme/skeleton.min.css")
+        ),
+        &(
+            format!("{}/public/normalize.min.css", blog_name),
+            include_str!("../init_files/theme/normalize.min.css")
+        ),
     ];
 
     for write_data in write_list {
