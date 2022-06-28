@@ -1,14 +1,15 @@
+use pulldown_cmark::{html::push_html, Options, Parser};
 use regex::Regex;
 use std::collections::HashMap;
 
-pub struct Post {
+pub struct PostParser {
     markdown_text: String,
     key_list: Vec<String>,
 }
 
-impl Post {
-    pub fn new(markdown_text: &str, key_list: &[String]) -> Post {
-        Post {
+impl PostParser {
+    pub fn new(markdown_text: &str, key_list: &[String]) -> PostParser {
+        PostParser {
             markdown_text: markdown_text.to_string(),
             key_list: key_list.to_vec(),
         }
@@ -24,7 +25,7 @@ impl Post {
         (captures[1].to_string(), captures[3].to_string())
     }
 
-    fn parse_header(&self) -> HashMap<String, String> {
+    pub fn parse_header(&self) -> HashMap<String, String> {
         let yaml: serde_yaml::Value = serde_yaml::from_str(&self.seperate_header().0)
             .expect("Could not parse the yaml header");
 
@@ -42,4 +43,15 @@ impl Post {
 
         parsed_yaml
     }
+
+    pub fn parse_md(&self) -> String {
+        let parser = Parser::new_ext(&self.markdown_text, Options::all());
+
+        let mut html = String::new();
+
+        push_html(&mut html, parser);
+
+        html
+    }
+
 }
