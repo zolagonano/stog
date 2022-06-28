@@ -16,7 +16,7 @@ impl PostParser {
     }
 
     fn seperate_header(&self) -> (String, String) {
-        let re = Regex::new(r"\A--\n((.|\n)*?)---\n((.|\n)*)").unwrap();
+        let re = Regex::new(r"\A---\n((.|\n)*?)---\n((.|\n)*)").unwrap();
 
         let captures = re
             .captures(&self.markdown_text)
@@ -45,7 +45,8 @@ impl PostParser {
     }
 
     pub fn parse_md(&self) -> String {
-        let parser = Parser::new_ext(&self.markdown_text, Options::all());
+        let md = self.seperate_header().1;
+        let parser = Parser::new_ext(&md, Options::all());
 
         let mut html = String::new();
 
@@ -53,5 +54,38 @@ impl PostParser {
 
         html
     }
+}
 
+#[cfg(test)]
+mod tests {
+    use super::PostParser;
+    use std::collections::HashMap;
+
+    const TEST_MD: &str = r#"---
+title: Testing title!
+date: 1970-1-1
+---
+
+**Blog post goes here!**
+"#;
+
+    #[test]
+    fn test_parse_and_seperate_header() {
+        let parser = PostParser::new(TEST_MD, &["title".to_string(), "date".to_string()]);
+
+        let mut expected_result: HashMap<String, String> = HashMap::new();
+
+        expected_result.insert(String::from("title"), String::from("Testing title!"));
+        expected_result.insert(String::from("date"), String::from("1970-1-1"));
+
+        assert_eq!(parser.parse_header(), expected_result);
+    }
+
+    #[test]
+    fn tesst_parse_md() {
+        let parser = PostParser::new(TEST_MD, &["title".to_string(), "date".to_string()]);
+        let expected_result = "<p><strong>Blog post goes here!</strong></p>\n";
+
+        assert_eq!(parser.parse_md(), expected_result);
+    }
 }
