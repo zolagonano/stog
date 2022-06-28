@@ -1,18 +1,7 @@
-use regex::Regex;
 use std::env::current_dir;
 use std::fs::{create_dir_all, read_dir, read_to_string, write, remove_dir_all};
 use std::path::Path;
 use fs_extra::{copy_items, dir};
-
-pub fn split_header_from_markdown(markdown: &str) -> (String, String) {
-    let re = Regex::new(r"\A---\n((.|\n)*?)---\n((.|\n)*)").expect("There is a problem in regex");
-
-    let caps = re
-        .captures(markdown)
-        .expect("Could not split header and body");
-
-    (caps[1].to_string(), caps[3].to_string())
-}
 
 pub fn read_file(path: &str) -> String {
     let path = Path::new(path);
@@ -61,23 +50,4 @@ pub fn write_file(path: &str, text: &str) {
 pub fn copy_dir(from: &[&str], to: &str) {
     let options = dir::CopyOptions::new();
     copy_items(from, to, &options).expect("could not copy this directory");
-}
-
-#[cfg(test)]
-mod tests {
-    use super::split_header_from_markdown;
-    #[test]
-    fn split_header_test() {
-        let expected_result = (
-            include_str!("../test_includes/markdown_lorem_ipsum_with_header_header.md").to_string(),
-            include_str!("../test_includes/markdown_lorem_ipsum_with_header_body.md").to_string(),
-        );
-
-        assert_eq!(
-            expected_result,
-            split_header_from_markdown(include_str!(
-                "../test_includes/markdown_lorem_ipsum_with_header.md"
-            ))
-        );
-    }
 }
