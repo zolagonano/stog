@@ -1,5 +1,5 @@
 use clap::{App, Arg, SubCommand};
-use lib::{common, config, header_parser, md_parser, templator};
+use lib::{common, config, post_parser::PostParser ,templator};
 use md5::compute as md5_compute;
 
 fn main() {
@@ -85,15 +85,11 @@ fn initialize(blog_name: &str) {
 
 fn get_post(config: config::Config, post_path: String) -> templator::Post {
     let post_file = common::read_file(&post_path);
-    let (header, body) = common::split_header_from_markdown(&post_file);
 
-    let config_headers = config.post_headers.clone();
+    let post_parser = PostParser::new(&post_file, &config.post_headers);
 
-    let yaml_parser = header_parser::Yaml::new(config_headers, header);
-    let header = yaml_parser.parse();
-
-    let markdown_parser = md_parser::Html::new(&body);
-    let body = markdown_parser.parse();
+    let header = post_parser.parse_header();
+    let body = post_parser.parse_md();
 
     let file_name = post_path.replace("_posts/", "").replace(".md", ".html");
     let file_id = format!(
