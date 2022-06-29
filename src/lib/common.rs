@@ -1,7 +1,7 @@
-use std::env::current_dir;
-use std::fs::{create_dir_all, read_dir, read_to_string, write, remove_dir_all};
-use std::path::Path;
 use fs_extra::{copy_items, dir};
+use std::env::current_dir;
+use std::fs::{create_dir_all, read_dir, read_to_string, remove_dir_all, write};
+use std::path::Path;
 
 pub fn read_file(path: &str) -> String {
     let path = Path::new(path);
@@ -25,7 +25,7 @@ pub fn list_dir(path: &str) -> Result<Vec<String>, &'static str> {
     }
 }
 
-pub fn rm_dir(path: &str){
+pub fn rm_dir(path: &str) {
     remove_dir_all(path).expect("could not remove this directory");
 }
 

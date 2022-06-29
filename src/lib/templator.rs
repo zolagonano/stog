@@ -40,10 +40,7 @@ pub struct InitConfig {
 
 impl MetaData {
     pub fn new(file_name: String, file_id: String) -> MetaData {
-        MetaData {
-            file_name,
-            file_id,
-        }
+        MetaData { file_name, file_id }
     }
 }
 
@@ -74,10 +71,7 @@ impl Post {
 
 impl Index<'_> {
     pub fn new<'a>(config: &'a Config, posts: &'a [Post]) -> Index<'a> {
-        Index {
-            config,
-            posts,
-        }
+        Index { config, posts }
     }
 
     pub fn template_text(&self, file_content: &str) -> String {
@@ -92,10 +86,7 @@ impl Index<'_> {
 
 impl Feed<'_> {
     pub fn new<'a>(config: &'a Config, posts: &'a [Post]) -> Feed<'a> {
-        Feed {
-            config,
-            posts,
-        }
+        Feed { config, posts }
     }
 
     pub fn template_text(&self, file_content: &str) -> String {

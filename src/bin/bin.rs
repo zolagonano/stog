@@ -1,5 +1,5 @@
 use clap::{App, Arg, SubCommand};
-use lib::{common, config, post_parser::PostParser ,templator};
+use lib::{common, config, post_parser::PostParser, templator};
 use md5::compute as md5_compute;
 
 fn main() {
@@ -66,15 +66,15 @@ fn initialize(blog_name: &str) {
         ),
         &(
             format!("{}/public/style.css", blog_name),
-            include_str!("../init_files/theme/style.css")
+            include_str!("../init_files/theme/style.css"),
         ),
         &(
             format!("{}/public/skeleton.min.css", blog_name),
-            include_str!("../init_files/theme/skeleton.min.css")
+            include_str!("../init_files/theme/skeleton.min.css"),
         ),
         &(
             format!("{}/public/normalize.min.css", blog_name),
-            include_str!("../init_files/theme/normalize.min.css")
+            include_str!("../init_files/theme/normalize.min.css"),
         ),
     ];
 
@@ -111,7 +111,7 @@ fn build() {
         && dir_list.contains(&"public".to_string())
         && dir_list.contains(&"_templates".to_string());
 
-    if dir_list.contains(&"_build".to_string()){
+    if dir_list.contains(&"_build".to_string()) {
         common::rm_dir("_build");
     }
 
@@ -119,9 +119,11 @@ fn build() {
         let config_file = common::read_file("config.toml");
         let config = config::Config::read_config(&config_file);
 
-        common::make_dirs(&[String::from("_build"),
+        common::make_dirs(&[
+            String::from("_build"),
             String::from("_build/posts"),
-            String::from("_build/public")]);
+            String::from("_build/public"),
+        ]);
 
         common::copy_dir(&["public"], "_build");
 
