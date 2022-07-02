@@ -1,5 +1,5 @@
 use crate::config::Config;
-use serde_derive::{Deserialize, Serialize};
+use serde_derive::Serialize;
 use std::collections::HashMap;
 use tera::{Context, Tera};
 
