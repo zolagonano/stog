@@ -3,51 +3,49 @@ use std::env::current_dir;
 use std::fs::{create_dir_all, read_dir, read_to_string, remove_dir_all, write};
 use std::path::Path;
 
-pub fn read_file(path: &str) -> String {
+pub fn read_file(path: &str) -> Result<String, Box<dyn std::error::Error>> {
     let path = Path::new(path);
-    read_to_string(path)
-        .expect("could not read this file")
-        .parse()
-        .expect("could not parse this file")
+    Ok(read_to_string(path)?.parse()?)
 }
 
-pub fn list_dir(path: &str) -> Result<Vec<String>, &'static str> {
+pub fn list_dir(path: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let path = Path::new(path);
     if path.is_dir() {
         let mut file_list: Vec<String> = Vec::new();
-        for file in read_dir(path).expect("could not read this directory") {
-            file_list.push(file.unwrap().file_name().into_string().unwrap());
+        for file in read_dir(path)? {
+            file_list.push(file?.file_name().into_string().unwrap());
         }
 
         Ok(file_list)
     } else {
-        Err("not a directory")
+        Err("Not a directory".into())
     }
 }
 
-pub fn rm_dir(path: &str) {
-    remove_dir_all(path).expect("could not remove this directory");
+pub fn rm_dir(path: &str) -> std::io::Result<()> {
+    remove_dir_all(path)?;
+    Ok(())
 }
 
-pub fn make_dirs(dirs: &[String]) {
+pub fn make_dirs(dirs: &[String]) -> std::io::Result<()> {
     for dir in dirs {
-        create_dir_all(dir).expect("could not create directory");
+        create_dir_all(dir)?;
     }
+    Ok(())
 }
 
-pub fn pwd() -> String {
-    current_dir()
-        .expect("could not get current directory")
-        .display()
-        .to_string()
+pub fn pwd() -> std::io::Result<String> {
+    Ok(current_dir()?.display().to_string())
 }
 
-pub fn write_file(path: &str, text: &str) {
+pub fn write_file(path: &str, text: &str) -> std::io::Result<()> {
     let path = Path::new(path);
-    write(path, text).expect("could not write file");
+    write(path, text)?;
+    Ok(())
 }
 
-pub fn copy_dir(from: &[&str], to: &str) {
+pub fn copy_dir(from: &[&str], to: &str) -> Result<(), Box<dyn std::error::Error>> {
     let options = dir::CopyOptions::new();
-    copy_items(from, to, &options).expect("could not copy this directory");
+    copy_items(from, to, &options)?;
+    Ok(())
 }

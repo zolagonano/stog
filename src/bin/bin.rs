@@ -2,7 +2,7 @@ use clap::{App, Arg, SubCommand};
 use lib::{common, config, post_parser::PostParser, templator};
 use md5::compute as md5_compute;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = App::new("STOG: Static Blog Generator")
         .version("0.1.0")
         .author("Zola Gonano <zolagonano@protonmail.com>")
@@ -22,13 +22,17 @@ fn main() {
             .value_of("blog_name")
             .unwrap();
 
-        initialize(blog_name);
+        initialize(blog_name)?;
+        Ok(())
     } else if matches.is_present("build") {
-        build();
+        build()?;
+        Ok(())
+    } else {
+        Err("Use --help to see usage".into())
     }
 }
 
-fn initialize(blog_name: &str) {
+fn initialize(blog_name: &str) -> Result<(), Box<dyn std::error::Error>> {
     let dir_list = vec![
         String::from(blog_name),
         format!("{}/_posts", blog_name),
@@ -36,7 +40,7 @@ fn initialize(blog_name: &str) {
         format!("{}/public", blog_name),
     ];
 
-    common::make_dirs(&dir_list);
+    common::make_dirs(&dir_list)?;
 
     let config = config::Config::get_defaults_string();
 
@@ -77,12 +81,16 @@ fn initialize(blog_name: &str) {
     ];
 
     for write_data in write_list {
-        common::write_file(&write_data.0, write_data.1);
+        common::write_file(&write_data.0, write_data.1)?;
     }
+    Ok(())
 }
 
-fn get_post(config: config::Config, post_path: String) -> templator::Post {
-    let post_file = common::read_file(&post_path);
+fn get_post(
+    config: config::Config,
+    post_path: String,
+) -> Result<templator::Post, Box<dyn std::error::Error>> {
+    let post_file = common::read_file(&post_path)?;
 
     let post_parser = PostParser::new(&post_file, &config.post_headers);
 
@@ -97,12 +105,12 @@ fn get_post(config: config::Config, post_path: String) -> templator::Post {
 
     let metadata = templator::MetaData::new(file_name, file_id);
 
-    templator::Post::new(config, body, header, metadata)
+    Ok(templator::Post::new(config, body, header, metadata))
 }
 
-fn build() {
-    let current_dir = common::pwd();
-    let dir_list = common::list_dir(&current_dir).unwrap();
+fn build() -> Result<(), Box<dyn std::error::Error>> {
+    let current_dir = common::pwd()?;
+    let dir_list = common::list_dir(&current_dir)?;
 
     let is_blog_dir = dir_list.contains(&"config.toml".to_string())
         && dir_list.contains(&"_posts".to_string())
@@ -110,57 +118,57 @@ fn build() {
         && dir_list.contains(&"_templates".to_string());
 
     if dir_list.contains(&"_build".to_string()) {
-        common::rm_dir("_build");
+        common::rm_dir("_build")?;
     }
 
     if is_blog_dir {
-        let config_file = common::read_file("config.toml");
+        let config_file = common::read_file("config.toml")?;
         let config = config::Config::read_config(&config_file);
 
         common::make_dirs(&[
             String::from("_build"),
             String::from("_build/posts"),
             String::from("_build/public"),
-        ]);
+        ])?;
 
-        common::copy_dir(&["public"], "_build");
+        common::copy_dir(&["public"], "_build")?;
 
-        let posts: Vec<String> = common::list_dir("_posts")
-            .unwrap()
+        let posts: Vec<String> = common::list_dir("_posts")?
             .iter()
             .map(|item| format!("_posts/{}", item))
             .collect();
 
         let mut index_posts: Vec<templator::Post> = Vec::new();
 
-        let post_template_file = common::read_file("_templates/post.html");
+        let post_template_file = common::read_file("_templates/post.html")?;
         for post in posts {
-            let template_post = get_post(config.clone(), post.clone());
+            let template_post = get_post(config.clone(), post.clone())?;
             common::write_file(
                 &format!(
                     "_build/posts/{}",
                     post.replace("_posts/", "").replace(".md", ".html")
                 ),
                 &template_post.template_text(&post_template_file),
-            );
+            )?;
 
             index_posts.push(template_post.clone());
         }
 
-        let index_template_file = common::read_file("_templates/index.html");
+        let index_template_file = common::read_file("_templates/index.html")?;
         let template_index = templator::Index::new(&config, &index_posts);
         common::write_file(
             "_build/index.html",
             &template_index.template_text(&index_template_file),
-        );
+        )?;
 
-        let feed_template_file = common::read_file("_templates/atom.xml");
+        let feed_template_file = common::read_file("_templates/atom.xml")?;
         let template_feed = templator::Feed::new(&config, &index_posts);
         common::write_file(
             "_build/atom.xml",
             &template_feed.template_text(&feed_template_file),
-        );
+        )?;
+        Ok(())
     } else {
-        eprintln!("Could not find necessary directories!!!");
+        Err("Could not find necessary directories!!!".into())
     }
 }
