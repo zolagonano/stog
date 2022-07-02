@@ -38,12 +38,10 @@ fn initialize(blog_name: &str) {
 
     common::make_dirs(&dir_list);
 
-    let config_template_file = include_str!("../init_files/config.toml");
-    let config = templator::InitConfig::new(config::Config::get_defaults())
-        .template_text(config_template_file);
+    let config = config::Config::get_defaults_string();
 
     let write_list: &[&(String, &str)] = &[
-        &(format!("{}/config.toml", blog_name), config.as_str()),
+        &(format!("{}/config.toml", blog_name), &config),
         &(
             format!("{}/_posts/lorem1.md", blog_name),
             include_str!("../init_files/posts/lorem1.md"),
