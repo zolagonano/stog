@@ -10,9 +10,9 @@
     {% for post in posts %}
     <entry>
         <title>{{ post.header["title"] }}</title>
-        <link href="{{ config.base_url }}/posts/{{ post.metadata.file_name }}"/>
-        <id>{{ post.metadata.file_id }}</id>
-        <updated>post.header["date"] | date(format="%Y-%m-%dT%H:%M:%S%:z")</updated>
+        <link href="{{ config.base_url }}/posts/{{ post.file_name }}"/>
+        <id>{{ config.base_url }}:posts:{{ post.file_name }}</id>
+        <updated>{{ post.header["date"] | date(format="%Y-%m-%dT%H:%M:%S%:z") }}</updated>
         <content type="html">{{ post.body }}</content>
     </entry>
     {% endfor %}
