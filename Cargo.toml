@@ -1,6 +1,6 @@
 [package]
 name = "stog"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Zola Gonano <zolagonano@protonmail.com>"]
 edition = "2021"
 description = "STOG is a static blog generator implemented in rust"
