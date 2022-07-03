@@ -8,17 +8,11 @@ fn template_one(text: &str, context: &Context, auto_escape: bool) -> String {
 }
 
 #[derive(Serialize, Debug, Clone)]
-pub struct MetaData {
-    file_name: String,
-    file_id: String,
-}
-
-#[derive(Serialize, Debug, Clone)]
 pub struct Post {
     config: Config,
     body: String,
     header: HashMap<String, String>,
-    metadata: MetaData,
+    file_name: String,
 }
 
 #[derive(Serialize, Debug)]
@@ -33,24 +27,18 @@ pub struct Feed<'a> {
     posts: &'a [Post],
 }
 
-impl MetaData {
-    pub fn new(file_name: String, file_id: String) -> MetaData {
-        MetaData { file_name, file_id }
-    }
-}
-
 impl Post {
     pub fn new(
         config: Config,
         body: String,
         header: HashMap<String, String>,
-        metadata: MetaData,
+        file_name: String,
     ) -> Post {
         Post {
             config,
             body,
             header,
-            metadata,
+            file_name,
         }
     }
 
