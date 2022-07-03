@@ -1,6 +1,5 @@
 use clap::{App, Arg, SubCommand};
 use lib::{common, config, post_parser::PostParser, templator};
-use md5::compute as md5_compute;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = App::new("STOG: Static Blog Generator")
@@ -98,14 +97,8 @@ fn get_post(
     let body = post_parser.parse_md();
 
     let file_name = post_path.replace("_posts/", "").replace(".md", ".html");
-    let file_id = format!(
-        "{:x}",
-        md5_compute(format!("{:#?}{}{}", &header, &body, &post_path))
-    );
 
-    let metadata = templator::MetaData::new(file_name, file_id);
-
-    Ok(templator::Post::new(config, body, header, metadata))
+    Ok(templator::Post::new(config, body, header, file_name))
 }
 
 fn build() -> Result<(), Box<dyn std::error::Error>> {
