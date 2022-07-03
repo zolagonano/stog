@@ -141,7 +141,7 @@ fn build() -> Result<(), Box<dyn std::error::Error>> {
                     "_build/posts/{}",
                     post.replace("_posts/", "").replace(".md", ".html")
                 ),
-                &template_post.template_text(&post_template_file),
+                &template_post.template_text(&post_template_file)?,
             )?;
 
             index_posts.push(template_post.clone());
@@ -151,14 +151,14 @@ fn build() -> Result<(), Box<dyn std::error::Error>> {
         let template_index = templator::Index::new(&config, &index_posts);
         common::write_file(
             "_build/index.html",
-            &template_index.template_text(&index_template_file),
+            &template_index.template_text(&index_template_file)?,
         )?;
 
         let feed_template_file = common::read_file("_templates/atom.xml")?;
         let template_feed = templator::Feed::new(&config, &index_posts);
         common::write_file(
             "_build/atom.xml",
-            &template_feed.template_text(&feed_template_file),
+            &template_feed.template_text(&feed_template_file)?,
         )?;
         Ok(())
     } else {

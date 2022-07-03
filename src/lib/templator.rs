@@ -3,8 +3,8 @@ use serde_derive::Serialize;
 use std::collections::HashMap;
 use tera::{Context, Tera};
 
-fn template_one(text: &str, context: &Context, auto_escape: bool) -> String {
-    Tera::one_off(text, context, auto_escape).expect("could not render this template")
+fn template_one(text: &str, context: &Context, auto_escape: bool) -> tera::Result<String> {
+    Tera::one_off(text, context, auto_escape)
 }
 
 #[derive(Serialize, Debug, Clone)]
@@ -42,7 +42,7 @@ impl Post {
         }
     }
 
-    pub fn template_text(&self, file_content: &str) -> String {
+    pub fn template_text(&self, file_content: &str) -> tera::Result<String> {
         let mut context = Context::new();
 
         context.insert("config", &self.config);
@@ -57,7 +57,7 @@ impl Index<'_> {
         Index { config, posts }
     }
 
-    pub fn template_text(&self, file_content: &str) -> String {
+    pub fn template_text(&self, file_content: &str) -> tera::Result<String> {
         let mut context = Context::new();
 
         context.insert("config", &self.config);
@@ -72,7 +72,7 @@ impl Feed<'_> {
         Feed { config, posts }
     }
 
-    pub fn template_text(&self, file_content: &str) -> String {
+    pub fn template_text(&self, file_content: &str) -> tera::Result<String> {
         let mut context = Context::new();
 
         context.insert("config", &self.config);
