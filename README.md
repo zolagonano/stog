@@ -1,4 +1,9 @@
 # STOG
+
+![b](https://img.shields.io/crates/l/stog)
+![b](https://img.shields.io/crates/d/stog)
+![b](https://img.shields.io/crates/v/stog)
+
 STOG is a static blog generator from a directory of markdown files.
 
 **WARNING: THIS PROJECT IS NOT STABLE YET!!**
