@@ -120,7 +120,7 @@ fn build() -> Result<(), Box<dyn std::error::Error>> {
 
         common::make_dirs(&[
             String::from("_build"),
-            String::from("_build/posts"),
+            format!("_build/{}", &config.posts_dir),
             String::from("_build/public"),
         ])?;
 
@@ -138,7 +138,8 @@ fn build() -> Result<(), Box<dyn std::error::Error>> {
             let template_post = get_post(config.clone(), post.clone())?;
             common::write_file(
                 &format!(
-                    "_build/posts/{}",
+                    "_build/{}/{}",
+                    &config.posts_dir,
                     post.replace("_posts/", "").replace(".md", ".html")
                 ),
                 &template_post.template_text(&post_template_file)?,
