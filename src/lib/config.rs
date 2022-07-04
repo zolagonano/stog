@@ -6,6 +6,7 @@ pub struct Config {
     pub site_name: String,
     pub site_author: String,
     pub site_description: String,
+    pub posts_dir: String,
     pub post_headers: Vec<String>,
 }
 
@@ -20,6 +21,7 @@ impl Config {
             site_name: String::from("STOG"),
             site_author: String::from("Somebody"),
             site_description: String::from("generated with STOG"),
+            posts_dir: String::from("posts"),
             post_headers: vec![
                 String::from("title"),
                 String::from("date"),
