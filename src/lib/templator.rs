@@ -1,6 +1,5 @@
 use crate::config::Config;
 use serde_derive::Serialize;
-use std::collections::HashMap;
 use tera::{Context, Tera};
 
 fn template_one(text: &str, context: &Context, auto_escape: bool) -> tera::Result<String> {
@@ -11,7 +10,7 @@ fn template_one(text: &str, context: &Context, auto_escape: bool) -> tera::Resul
 pub struct Post {
     config: Config,
     body: String,
-    header: HashMap<String, String>,
+    header: serde_yaml::Value,
     file_name: String,
 }
 
@@ -28,12 +27,7 @@ pub struct Feed<'a> {
 }
 
 impl Post {
-    pub fn new(
-        config: Config,
-        body: String,
-        header: HashMap<String, String>,
-        file_name: String,
-    ) -> Post {
+    pub fn new(config: Config, body: String, header: serde_yaml::Value, file_name: String) -> Post {
         Post {
             config,
             body,
