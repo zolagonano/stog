@@ -91,7 +91,7 @@ fn get_post(
 ) -> Result<templator::Post, Box<dyn std::error::Error>> {
     let post_file = common::read_file(&post_path)?;
 
-    let post_parser = PostParser::new(&post_file, &config.post_headers);
+    let post_parser = PostParser::new(&post_file);
 
     let header = post_parser.parse_header();
     let body = post_parser.parse_md();
