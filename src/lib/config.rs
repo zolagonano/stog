@@ -6,7 +6,10 @@ pub struct Config {
     pub site_name: String,
     pub site_author: String,
     pub site_description: String,
-    pub posts_dir: String,
+    pub build_dirs: Vec<(String, String, bool)>,
+    pub public_dir: String,
+    pub templates_dir: String,
+    pub output_dir: String,
 }
 
 impl Config {
@@ -20,7 +23,10 @@ impl Config {
             site_name: String::from("STOG"),
             site_author: String::from("Somebody"),
             site_description: String::from("generated with STOG"),
-            posts_dir: String::from("posts"),
+            build_dirs: vec![(String::from("_posts"), String::from("posts"), true)],
+            public_dir: String::from("public"),
+            templates_dir: String::from("_templates"),
+            output_dir: String::from("_build"),
         };
 
         toml::to_string_pretty(&default_config).unwrap()
