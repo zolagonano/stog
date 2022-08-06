@@ -10,7 +10,7 @@
     {% for post in posts %}
     <entry>
         <title>{{ post.header["title"] }}</title>
-        <link href="{{ config.base_url }}/posts/{{ post.file_name }}"/>
+        <link href="{{ config.base_url }}/{ post.file_name }}"/>
         <id>{{ config.base_url }}:posts:{{ post.file_name }}</id>
         <updated>{{ post.header["date"] | date(format="%Y-%m-%dT%H:%M:%S%:z") }}</updated>
         <content type="html">{{ post.body }}</content>
