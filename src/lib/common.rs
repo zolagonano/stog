@@ -5,29 +5,44 @@ use std::path::Path;
 
 pub fn read_file(path: &str) -> Result<String, Box<dyn std::error::Error>> {
     let path = Path::new(path);
-    Ok(read_to_string(path)?.parse()?)
+    if path.exists() {
+        if path.is_file() {
+            Ok(read_to_string(path)?.parse()?)
+        } else {
+            Err(format!("{} is not a file", path.display()).into())
+        }
+    } else {
+        Err(format!("Could not find file {}", path.display()).into())
+    }
 }
 
 pub fn list_dir(path: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let path = Path::new(path);
-    if path.is_dir() {
-        let mut file_list: Vec<String> = Vec::new();
-        for file in read_dir(path)? {
-            file_list.push(file?.file_name().into_string().unwrap());
-        }
+    if path.exists() {
+        if path.is_dir() {
+            let mut file_list: Vec<String> = Vec::new();
+            for file in read_dir(path)? {
+                file_list.push(file?.file_name().into_string().unwrap());
+            }
 
-        Ok(file_list)
+            Ok(file_list)
+        } else {
+            Err(format!("{} is not a directory", path.display()).into())
+        }
     } else {
-        Err("Not a directory".into())
+        Err(format!("Could not find directory {}", path.display()).into())
     }
 }
 
 pub fn rm_dir(path: &str) -> std::io::Result<()> {
-    remove_dir_all(path)?;
+    let path = Path::new(path);
+    if path.exists() && path.is_dir() {
+        remove_dir_all(path)?;
+    }
     Ok(())
 }
 
-pub fn make_dirs(dirs: &[String]) -> std::io::Result<()> {
+pub fn make_dirs(dirs: &[&str]) -> std::io::Result<()> {
     for dir in dirs {
         create_dir_all(dir)?;
     }
