@@ -32,11 +32,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn initialize(blog_name: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let dir_list = vec![
-        String::from(blog_name),
-        format!("{}/_posts", blog_name),
-        format!("{}/_templates", blog_name),
-        format!("{}/public", blog_name),
+    let dir_list = [
+        blog_name,
+        &format!("{}/_posts", blog_name),
+        &format!("{}/_templates", blog_name),
+        &format!("{}/public", blog_name),
     ];
 
     common::make_dirs(&dir_list)?;
@@ -88,6 +88,7 @@ fn initialize(blog_name: &str) -> Result<(), Box<dyn std::error::Error>> {
 fn get_post(
     config: config::Config,
     post_path: String,
+    build_dir: &(String, String, bool),
 ) -> Result<templator::Post, Box<dyn std::error::Error>> {
     let post_file = common::read_file(&post_path)?;
 
@@ -96,73 +97,68 @@ fn get_post(
     let header = post_parser.parse_header();
     let body = post_parser.parse_md();
 
-    let file_name = post_path.replace("_posts/", "").replace(".md", ".html");
+    let file_name = post_path.replace(&build_dir.0, "").replace(".md", ".html");
 
-    Ok(templator::Post::new(config, body, header, file_name))
+    Ok(templator::Post::new(
+        config,
+        body,
+        header,
+        format!("{}{}", build_dir.1, file_name),
+    ))
 }
 
 fn build() -> Result<(), Box<dyn std::error::Error>> {
-    let current_dir = common::pwd()?;
-    let dir_list = common::list_dir(&current_dir)?;
+    let config_file = common::read_file("config.toml")?;
+    let config = config::Config::read_config(&config_file);
 
-    let is_blog_dir = dir_list.contains(&"config.toml".to_string())
-        && dir_list.contains(&"_posts".to_string())
-        && dir_list.contains(&"public".to_string())
-        && dir_list.contains(&"_templates".to_string());
+    common::rm_dir(&config.output_dir)?; // Removes the build dir if exists
 
-    if dir_list.contains(&"_build".to_string()) {
-        common::rm_dir("_build")?;
-    }
+    common::make_dirs(&[
+        &config.output_dir,
+        &format!("{}/{}", &config.output_dir, &config.public_dir),
+    ])?;
 
-    if is_blog_dir {
-        let config_file = common::read_file("config.toml")?;
-        let config = config::Config::read_config(&config_file);
+    common::copy_dir(&[&config.public_dir], &config.output_dir)?;
 
-        common::make_dirs(&[
-            String::from("_build"),
-            format!("_build/{}", &config.posts_dir),
-            String::from("_build/public"),
-        ])?;
+    let index_template_file = common::read_file(&format!("{}/index.html", &config.templates_dir))?;
 
-        common::copy_dir(&["public"], "_build")?;
-
-        let posts: Vec<String> = common::list_dir("_posts")?
+    let post_template_file = common::read_file(&format!("{}/post.html", &config.templates_dir))?;
+    let mut index_posts: Vec<templator::Post> = Vec::new();
+    for build_dir in &config.build_dirs {
+        common::make_dirs(&[&format!("{}/{}", &config.output_dir, &build_dir.1)])?;
+        let posts: Vec<String> = common::list_dir(&build_dir.0)?
             .iter()
-            .map(|item| format!("_posts/{}", item))
+            .map(|item| format!("{}/{}", &build_dir.0, item))
             .collect();
 
-        let mut index_posts: Vec<templator::Post> = Vec::new();
-
-        let post_template_file = common::read_file("_templates/post.html")?;
         for post in posts {
-            let template_post = get_post(config.clone(), post.clone())?;
+            let template_post = get_post(config.clone(), post.clone(), &build_dir)?;
             common::write_file(
                 &format!(
-                    "_build/{}/{}",
-                    &config.posts_dir,
-                    post.replace("_posts/", "").replace(".md", ".html")
+                    "{}/{}/{}",
+                    &config.output_dir,
+                    &build_dir.1,
+                    post.replace(&build_dir.0, "").replace(".md", ".html")
                 ),
                 &template_post.template_text(&post_template_file)?,
             )?;
-
-            index_posts.push(template_post.clone());
+            if build_dir.2 {
+                index_posts.push(template_post.clone());
+            }
         }
-
-        let index_template_file = common::read_file("_templates/index.html")?;
-        let template_index = templator::Index::new(&config, &index_posts);
-        common::write_file(
-            "_build/index.html",
-            &template_index.template_text(&index_template_file)?,
-        )?;
-
-        let feed_template_file = common::read_file("_templates/atom.xml")?;
-        let template_feed = templator::Feed::new(&config, &index_posts);
-        common::write_file(
-            "_build/atom.xml",
-            &template_feed.template_text(&feed_template_file)?,
-        )?;
-        Ok(())
-    } else {
-        Err("Could not find necessary directories!!!".into())
     }
+
+    let template_index = templator::Index::new(&config, &index_posts);
+    common::write_file(
+        &format!("{}/index.html", &config.output_dir),
+        &template_index.template_text(&index_template_file)?,
+    )?;
+
+    let feed_template_file = common::read_file(&format!("{}/atom.xml", &config.templates_dir))?;
+    let template_feed = templator::Feed::new(&config, &index_posts);
+    common::write_file(
+        &format!("{}/atom.xml", &config.output_dir),
+        &template_feed.template_text(&feed_template_file)?,
+    )?;
+    Ok(())
 }
