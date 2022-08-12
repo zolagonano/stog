@@ -90,7 +90,7 @@ fn get_post(
     post_path: &str,
     build_dir: &(String, String, bool),
 ) -> Result<templator::Post, Box<dyn std::error::Error>> {
-    let post_file = common::read_file(&post_path)?;
+    let post_file = common::read_file(post_path)?;
 
     let post_parser = PostParser::new(&post_file);
 
@@ -132,7 +132,7 @@ fn build() -> Result<(), Box<dyn std::error::Error>> {
             .collect();
 
         for post in posts {
-            let template_post = get_post(&config, &post, &build_dir)?;
+            let template_post = get_post(&config, &post, build_dir)?;
             common::write_file(
                 &format!(
                     "{}/{}/{}",
@@ -143,7 +143,7 @@ fn build() -> Result<(), Box<dyn std::error::Error>> {
                 &template_post.template_text(&post_template_file)?,
             )?;
             if build_dir.2 {
-                index_posts.push(template_post.clone());
+                index_posts.push(template_post);
             }
         }
     }
