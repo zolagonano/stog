@@ -11,7 +11,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .about("Initialize blog directory")
                 .arg(Arg::with_name("blog_name").required(true)),
         )
-        .subcommand(SubCommand::with_name("build").about("Builds the blog files"))
+        .subcommand(
+            SubCommand::with_name("build")
+                .about("Builds the blog files")
+                .arg(Arg::with_name("config_file").required(false)),
+        )
         .get_matches();
 
     if matches.is_present("init") {
@@ -24,7 +28,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         initialize(blog_name)?;
         Ok(())
     } else if matches.is_present("build") {
-        build()?;
+        let config_path = matches
+            .subcommand_matches("build")
+            .unwrap()
+            .value_of("config_file")
+            .unwrap_or("config.toml");
+
+        build(config_path)?;
         Ok(())
     } else {
         Err("Use --help to see usage".into())
@@ -107,8 +117,8 @@ fn get_post(
     ))
 }
 
-fn build() -> Result<(), Box<dyn std::error::Error>> {
-    let config_file = common::read_file("config.toml")?;
+fn build(config_path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let config_file = common::read_file(config_path)?;
     let config = config::Config::read_config(&config_file);
 
     common::rm_dir(&config.output_dir)?; // Removes the build dir if exists
