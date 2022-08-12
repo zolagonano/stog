@@ -86,8 +86,8 @@ fn initialize(blog_name: &str) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn get_post(
-    config: config::Config,
-    post_path: String,
+    config: &config::Config,
+    post_path: &str,
     build_dir: &(String, String, bool),
 ) -> Result<templator::Post, Box<dyn std::error::Error>> {
     let post_file = common::read_file(&post_path)?;
@@ -100,7 +100,7 @@ fn get_post(
     let file_name = post_path.replace(&build_dir.0, "").replace(".md", ".html");
 
     Ok(templator::Post::new(
-        config,
+        config.clone(),
         body,
         header,
         format!("{}{}", build_dir.1, file_name),
@@ -132,7 +132,7 @@ fn build() -> Result<(), Box<dyn std::error::Error>> {
             .collect();
 
         for post in posts {
-            let template_post = get_post(config.clone(), post.clone(), &build_dir)?;
+            let template_post = get_post(&config, &post, &build_dir)?;
             common::write_file(
                 &format!(
                     "{}/{}/{}",
