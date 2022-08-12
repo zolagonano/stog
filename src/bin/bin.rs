@@ -3,7 +3,7 @@ use lib::{common, config, post_parser::PostParser, templator};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = App::new("STOG: Static Blog Generator")
-        .version("0.1.0")
+        .version("0.2.0")
         .author("Zola Gonano <zolagonano@protonmail.com>")
         .about("Generates a static blog from markdown files.")
         .subcommand(
